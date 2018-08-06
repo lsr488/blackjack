@@ -1,0 +1,39 @@
+h1 {
+	text-align: center;
+}
+div {
+	font-size: 24px;
+}
+
+.wrapper {
+	text-align: center;
+	display: grid;
+	grid-template-columns: 2fr 1fr 2fr;
+	grid-template-rows: 1fr 1fr;
+	grid-column-gap: 10px;
+}
+
+.card {
+	display: inline-block;
+	margin: 2px 2px 2px 2px;
+	height: 70px;
+	width: 60px;
+	line-height: 70px;
+	text-align: center;
+	/*background-color: green;*/
+	/*color: red;*/
+	border: 1px solid black;
+}
+
+.card-red {
+	color: red;
+	display: inline-block;
+}
+
+.displays {
+	line-height: 40px;
+}
+
+.inactive {
+	display: none;
+}		
