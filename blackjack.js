@@ -52,6 +52,9 @@ var dealerRevealButton = document.getElementsByName("dealer-reveal")[0];
 var dealerHitButton = document.getElementsByName("dealer-hit")[0];
 var dealerStandButton = document.getElementsByName("dealer-stand")[0];
 
+var winDisplay = document.querySelector("#winner");
+var winUpdate = document.querySelector("#winner-update");
+
 var deck = {
 	cards: [],
 	numOfCards: 52,
@@ -151,7 +154,7 @@ function genDeck() {
 	tempCards.forEach(function(i) {
 		cards.push(i);
 	})
-	console.log("deck:", cards);
+	// console.log("deck:", cards);
 }
 
 function initialDeal() {
@@ -342,7 +345,8 @@ function stand(turn){
 	} else {
 		dealerUpdate.innerText = "Dealer stands."
 		disableButton(dealerHitButton);	
-		disableButton(dealerStandButton);	
+		disableButton(dealerStandButton);
+		isGameOver();
 	}		
 }
 
@@ -354,52 +358,90 @@ function revealCard() {
 	dealerUpdate.innerText = "Dealer reveals second card."
 }
 
-function checkScore(turn) {
-	if(turn.sum == 21) {
-		turn.isWin = true;
-		if(turn == player) {
-			playerUpdate.innerText = "Blackjack!"
-			disableButton(playerHitButton);	
-			disableButton(playerStandButton);	
-			disableButton(dealerRevealButton);
-			revealCard();
-			updateDealerDisplays();
-			// checkWinner();
-		} else {
-			dealerUpdate.innerText = "Blackjack!"
-			disableButton(dealerHitButton);	
-			disableButton(dealerStandButton);	
-			revealCard();
-			updateDealerDisplays();
-			disableButton(dealerRevealButton);
-			// checkWinner();
-		}
-	} else if(turn.sum > 21) {
-		turn.isBust = true;
-		if(turn == player) {
-			playerUpdate.innerText = "Bust!"
-			disableButton(playerHitButton);	
-			disableButton(playerStandButton);	
-			revealCard();
-			updateDealerDisplays();
-			disableButton(dealerRevealButton);
-			// checkWinner();
-		} else {
-			dealerUpdate.innerText = "Bust!"
-			disableButton(dealerHitButton);	
-			disableButton(dealerStandButton);	
-			disableButton(dealerRevealButton);
-			// checkWinner();
-		}
-	} 
-	else if(turn == dealer && turn.sum >= 17) {
-		// console.log("score < 21");
-		dealer.isStand == true;
-		dealerUpdate.innerText = "Dealer stands.";
+function declareBlackjack(turn) {
+	turn.isWin = true;
+	if(turn == player) {
+		playerUpdate.innerText = "Blackjack!"
+		disableButton(playerHitButton);	
+		disableButton(playerStandButton);	
+		disableButton(dealerRevealButton);
+		revealCard();
+		updateDealerDisplays();		
+	} else {
+		dealerUpdate.innerText = "Blackjack!"
 		disableButton(dealerHitButton);	
 		disableButton(dealerStandButton);	
 		disableButton(dealerRevealButton);
-		checkWinner();
+		revealCard();
+		updateDealerDisplays();
+		isGameOver();
+	}
+}
+
+function declareBust(turn) {
+	turn.isBust = true;
+	if(turn == player) {
+		playerUpdate.innerText = "Bust!"
+		disableButton(playerHitButton);	
+		disableButton(playerStandButton);	
+		disableButton(dealerRevealButton);
+		revealCard();
+		updateDealerDisplays();
+		// checkWinner();
+	} else {
+		dealerUpdate.innerText = "Bust!"
+		disableButton(dealerHitButton);	
+		disableButton(dealerStandButton);	
+		disableButton(dealerRevealButton);
+		isGameOver();
+	}
+}
+
+function checkScore(turn) {
+	if(turn.sum == 21) {
+		declareBlackjack(turn);
+		// if(turn == player) {
+		// 	playerUpdate.innerText = "Blackjack!"
+		// 	disableButton(playerHitButton);	
+		// 	disableButton(playerStandButton);	
+		// 	disableButton(dealerRevealButton);
+		// 	revealCard();
+		// 	updateDealerDisplays();
+			// checkWinner();
+		// } else {
+			// dealerUpdate.innerText = "Blackjack!"
+			// disableButton(dealerHitButton);	
+			// disableButton(dealerStandButton);	
+			// disableButton(dealerRevealButton);
+			// revealCard();
+			// updateDealerDisplays();
+			// checkWinner();
+		} else if(turn.sum > 21) {
+			declareBust(turn);
+		// turn.isBust = true;
+		// if(turn == player) {
+		// 	playerUpdate.innerText = "Bust!"
+		// 	disableButton(playerHitButton);	
+		// 	disableButton(playerStandButton);	
+		// 	disableButton(dealerRevealButton);
+		// 	revealCard();
+		// 	updateDealerDisplays();
+		// 	// checkWinner();
+		// } else {
+		// 	dealerUpdate.innerText = "Bust!"
+		// 	disableButton(dealerHitButton);	
+		// 	disableButton(dealerStandButton);	
+		// 	disableButton(dealerRevealButton);
+			// checkWinner();
+		}	else if(turn == dealer && turn.sum >= 17) {
+			stand(dealer);
+			// console.log("score < 21");
+			// dealer.isStand = true;
+			// dealerUpdate.innerText = "Dealer stands.";
+			// disableButton(dealerHitButton);	
+			// disableButton(dealerStandButton);	
+			// disableButton(dealerRevealButton);
+			// checkWinner();
 	}
 }
 
@@ -466,13 +508,13 @@ function displaySuitsAndName(turn, display) {
 		}
 
 		if(card >= 15 && card <= 22) {
-			console.log(card - 13);
+			// console.log(card - 13);
 			cardName = card - 13;
 		} else if(card >= 28 && card <= 35) {
-			console.log(card - 26);
+			// console.log(card - 26);
 			cardName = card - 26;
 		} else if(card >= 41 && card <= 48) {
-			console.log(card - 39);
+			// console.log(card - 39);
 			cardName = card - 39;
 		}
 
@@ -491,28 +533,39 @@ function disableButton(button) {
 }
 
 function checkWinner() {
-	if(player.isWinner == true && dealer.isWinner == false) {
+	if(player.isWin == true && dealer.isWin == false) {
 		console.log("win/true win/false: Player wins!");
-	} else if(player.isWinner == false && dealer.isWinner == true) {
+		winUpdate.innerText = "Player wins!";
+	} else if(player.isWin == false && dealer.isWin == true) {
 	console.log("win/false win/false: Dealer wins!");
+		winUpdate.innerText = "Dealer wins!";
 	} else if(player.isBust == true && dealer.isBust == false) {
 		console.log("bust/true bust/false: Dealer wins!")
+		winUpdate.innerText = "Dealer wins!";
 	} else if(player.isBust == false && dealer.isBust == true) {
 		console.log("bust/false bust/true: Player wins!")
+		winUpdate.innerText = "Player wins!";
 	} else if(player.isBust == true && dealer.isBust == true) {
 		console.log("bust/true bust/true: No winner, collect original bet.");
+		winUpdate.innerText = "No winner.";
 	} else if(player.isStand == true && dealer.isStand == true) {
 			if(player.sum > dealer.sum) {
 				console.log("stand/true stand/true: Player wins!");
+				winUpdate.innerText = "Player wins!";
 			} else {
 				console.log("stand/true stand/true: Dealer wins!");
+				winUpdate.innerText = "Dealer wins!";
 			}
 	}
 }
 
 function isGameOver() {
 	if(dealer.isBust == true || dealer.isStand == true || dealer.isStand == true) {
+		winDisplay.classList.remove("inactive");
+		winUpdate.classList.remove("inactive");
 		checkWinner();
+	} else {
+		console.log("the game isn't over yet");
 	}
 }
 
