@@ -201,7 +201,6 @@ function initialDisplay() {
 	addPointValues(oneCard);
 	// addPointValues(player);
 	updatePlayerDisplays();
-
 }
 
 // var testHand = {
@@ -318,7 +317,7 @@ function hit(turn) {
 			// if total >= 17, dealer stands
 			// console.log(dealer.sum + " >= 17: dealer stands");
 			// console.log("dealer:", dealer.hand.join(", "), `(total: ${dealer.sum})`);	
-			dealerUpdate.innerText = "Dealer stands.";
+			stand(dealer);
 			checkScore(dealer);
 		} else if(dealer.sum <= 16) {
 			// if total <= 16, dealer hits until 17 >= 17
@@ -357,7 +356,6 @@ function revealCard() {
 
 function checkScore(turn) {
 	if(turn.sum == 21) {
-		// console.log("Blackjack!");
 		turn.isWin = true;
 		if(turn == player) {
 			playerUpdate.innerText = "Blackjack!"
@@ -366,6 +364,7 @@ function checkScore(turn) {
 			disableButton(dealerRevealButton);
 			revealCard();
 			updateDealerDisplays();
+			// checkWinner();
 		} else {
 			dealerUpdate.innerText = "Blackjack!"
 			disableButton(dealerHitButton);	
@@ -373,9 +372,9 @@ function checkScore(turn) {
 			revealCard();
 			updateDealerDisplays();
 			disableButton(dealerRevealButton);
+			// checkWinner();
 		}
 	} else if(turn.sum > 21) {
-		// console.log("Bust!");
 		turn.isBust = true;
 		if(turn == player) {
 			playerUpdate.innerText = "Bust!"
@@ -384,19 +383,23 @@ function checkScore(turn) {
 			revealCard();
 			updateDealerDisplays();
 			disableButton(dealerRevealButton);
+			// checkWinner();
 		} else {
 			dealerUpdate.innerText = "Bust!"
 			disableButton(dealerHitButton);	
 			disableButton(dealerStandButton);	
 			disableButton(dealerRevealButton);
+			// checkWinner();
 		}
 	} 
 	else if(turn == dealer && turn.sum >= 17) {
 		// console.log("score < 21");
+		dealer.isStand == true;
 		dealerUpdate.innerText = "Dealer stands.";
 		disableButton(dealerHitButton);	
 		disableButton(dealerStandButton);	
-		disableButton(dealerRevealButton);	
+		disableButton(dealerRevealButton);
+		checkWinner();
 	}
 }
 
@@ -487,7 +490,31 @@ function disableButton(button) {
 	button.setAttribute("disabled", "disabled");
 }
 
-function checkWinner() {}
+function checkWinner() {
+	if(player.isWinner == true && dealer.isWinner == false) {
+		console.log("win/true win/false: Player wins!");
+	} else if(player.isWinner == false && dealer.isWinner == true) {
+	console.log("win/false win/false: Dealer wins!");
+	} else if(player.isBust == true && dealer.isBust == false) {
+		console.log("bust/true bust/false: Dealer wins!")
+	} else if(player.isBust == false && dealer.isBust == true) {
+		console.log("bust/false bust/true: Player wins!")
+	} else if(player.isBust == true && dealer.isBust == true) {
+		console.log("bust/true bust/true: No winner, collect original bet.");
+	} else if(player.isStand == true && dealer.isStand == true) {
+			if(player.sum > dealer.sum) {
+				console.log("stand/true stand/true: Player wins!");
+			} else {
+				console.log("stand/true stand/true: Dealer wins!");
+			}
+	}
+}
+
+function isGameOver() {
+	if(dealer.isBust == true || dealer.isStand == true || dealer.isStand == true) {
+		checkWinner();
+	}
+}
 
 varSetUp();
 genDeck();
