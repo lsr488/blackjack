@@ -84,7 +84,8 @@ var player = {
 	isBust: false,
 	isWin: false,
 	isStand: false,
-	hasAce: false
+	hasAce: false,
+	acePointValue: 0
 }
 
 var dealer = {
@@ -93,7 +94,8 @@ var dealer = {
 	isBust: false,
 	isWin: false,
 	isStand: false,
-	hasAce: false
+	hasAce: false,
+	acePointValue: 0
 }
 
 playerHitButton.addEventListener("click", function(event) {
@@ -185,16 +187,6 @@ function initialDisplay() {
 	var string = "";
 	var cardName = "";
 
-	// display's dealer's total points on initial round
-	dealerHand.innerText = dealer.hand[0];
-	if (dealer.hand[0] == 1) {
-		dealerTotal.innerText = 11;
-	} else if(dealer.hand[0] >= 10) {
-		dealerTotal.innerText = 10;
-	} else {
-		dealerTotal.innerText = dealer.hand[0];
-	}
-
 	// display dealer's first card only
 	var oneCard = {
 		hand: []
@@ -202,18 +194,27 @@ function initialDisplay() {
 	oneCard.hand.push(dealer.hand[0]);
 	displaySuitsAndName(oneCard.hand, dealerHand);
 	addPointValues(oneCard);
-	// addPointValues(player);
+
+	// display's dealer's total points on initial round
+	dealerTotal.innerText = dealer.sum;
+
+	// player
 	updatePlayerDisplays();
 }
 
 // var testHand = {
-// 	hand: [10, 9, 1, 14],
+// 	hand: [45, 2, 16, 40, 39],
+// 	holding: [45, 2, 16, 40, 39, 3],
 // 	sum: 0,
-// 	hasAce: false
+// 	hasAce: false,
+// 	acePointValue: 0
 // }
-// displaySuitsAndName(testHand.hand, testDisplay);
-// addPointValues(testHand);
-// testTotal.innerText = testHand.sum;
+// function x() {
+// 	displaySuitsAndName(testHand.hand, testDisplay);
+// 	addPointValues(testHand);
+// 	testTotal.innerText = testHand.sum;
+// }
+// x();
 
 function addPointValues(turn) {
 	var hand = turn.hand;
@@ -229,20 +230,24 @@ function addPointValues(turn) {
 				// console.log("turn: ", turn);
 				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue1);
+				turn.acePointValue = deck.ace.pointValue1;
 				accPoints += deck.ace.pointValue1;
 			} else if(accPoints + 11 <= 17 && turn == dealer) {
 				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue2);
+				turn.acePointValue = deck.ace.pointValue2;
 				accPoints += deck.ace.pointValue2;
 			// player rules for Ace Handling
 			} else if(accPoints + 11 > 21 && turn == player) {
 				// console.log("turn: ", turn);
 				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue1);
+				turn.acePointValue = deck.ace.pointValue1;
 				accPoints += deck.ace.pointValue1;
 			} else if(accPoints + 11 <= 21 && turn == player) {
 				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue2);
+				turn.acePointValue = deck.ace.pointValue2;
 				accPoints += deck.ace.pointValue2;
 			} 
 		}
@@ -271,35 +276,45 @@ function addPointValues(turn) {
 		} 
 		// spade non-tendcards
 		else if(hand[i] >= 15 && hand[i] <= 22) {
-			console.log("card: ", hand[i]);
+			console.log("card: ", hand[i] - 13);
 			console.log("points: ", hand[i] - 13);
 			accPoints += (hand[i] - 13);
 			console.log("accPoints: ", accPoints);
 		} 
 		// diamond non-tendcards
 		else if(hand[i] >= 28 && hand[i] <= 35) {
-			console.log("card: ", hand[i]);
+			console.log("card: ", hand[i] - 26);
 			console.log("points: ", hand[i] - 26);
 			accPoints += (hand[i] - 26);
 			console.log("accPoints: ", accPoints);
 		} 
 		// club non-tendcards
 		else if(hand[i] >= 41 && hand[i] <= 48) {
-			console.log("card: ", hand[i]);
+			console.log("card: ", hand[i] - 39);
 			console.log("points: ", hand[i] - 39);
 			accPoints += (hand[i] - 39);
 			console.log("accPoints: ", accPoints);
 		}
 	}
 
-		// below attempting to account for Ace as first element always getting 
-		if(accPoints > 21 && turn.hasAce == true) {
+		// below attempting to account for Ace as first element always being 11 points
+		// this doesn't work if you have a series of low cards, then an Ace, then a tenCard...
+		if(accPoints >= 21 && turn.hasAce == true && turn.acePointValue == 11) {
 			console.log("change ace point value from 11 to 1");
 			accPoints -= 10;
 		}
 
 	console.log("accPoints: ", accPoints);
-	turn.sum = accPoints;
+	console.log("turn: ", turn);
+
+	if(turn != player && turn != dealer) {
+		console.log("one card");
+		dealer.sum = accPoints
+		console.log(dealer);
+	} else {
+		turn.sum = accPoints;
+	}
+
 	checkScore(turn);
 }
 
@@ -366,7 +381,8 @@ function declareBlackjack(turn) {
 		disableButton(playerStandButton);	
 		disableButton(dealerRevealButton);
 		revealCard();
-		updateDealerDisplays();		
+		updateDealerDisplays();
+		isGameOver();	
 	} else {
 		dealerUpdate.innerText = "Blackjack!"
 		disableButton(dealerHitButton);	
@@ -400,48 +416,10 @@ function declareBust(turn) {
 function checkScore(turn) {
 	if(turn.sum == 21) {
 		declareBlackjack(turn);
-		// if(turn == player) {
-		// 	playerUpdate.innerText = "Blackjack!"
-		// 	disableButton(playerHitButton);	
-		// 	disableButton(playerStandButton);	
-		// 	disableButton(dealerRevealButton);
-		// 	revealCard();
-		// 	updateDealerDisplays();
-			// checkWinner();
-		// } else {
-			// dealerUpdate.innerText = "Blackjack!"
-			// disableButton(dealerHitButton);	
-			// disableButton(dealerStandButton);	
-			// disableButton(dealerRevealButton);
-			// revealCard();
-			// updateDealerDisplays();
-			// checkWinner();
-		} else if(turn.sum > 21) {
-			declareBust(turn);
-		// turn.isBust = true;
-		// if(turn == player) {
-		// 	playerUpdate.innerText = "Bust!"
-		// 	disableButton(playerHitButton);	
-		// 	disableButton(playerStandButton);	
-		// 	disableButton(dealerRevealButton);
-		// 	revealCard();
-		// 	updateDealerDisplays();
-		// 	// checkWinner();
-		// } else {
-		// 	dealerUpdate.innerText = "Bust!"
-		// 	disableButton(dealerHitButton);	
-		// 	disableButton(dealerStandButton);	
-		// 	disableButton(dealerRevealButton);
-			// checkWinner();
-		}	else if(turn == dealer && turn.sum >= 17) {
-			stand(dealer);
-			// console.log("score < 21");
-			// dealer.isStand = true;
-			// dealerUpdate.innerText = "Dealer stands.";
-			// disableButton(dealerHitButton);	
-			// disableButton(dealerStandButton);	
-			// disableButton(dealerRevealButton);
-			// checkWinner();
+	} else if(turn.sum > 21) {
+		declareBust(turn);
+	}	else if(turn == dealer && turn.sum >= 17) {
+		stand(dealer);
 	}
 }
 
@@ -535,32 +513,35 @@ function disableButton(button) {
 function checkWinner() {
 	if(player.isWin == true && dealer.isWin == false) {
 		console.log("win/true win/false: Player wins!");
-		winUpdate.innerText = "Player wins!";
+		winUpdate.innerText = "Player!";
 	} else if(player.isWin == false && dealer.isWin == true) {
 	console.log("win/false win/false: Dealer wins!");
-		winUpdate.innerText = "Dealer wins!";
+		winUpdate.innerText = "Dealer!";
 	} else if(player.isBust == true && dealer.isBust == false) {
 		console.log("bust/true bust/false: Dealer wins!")
-		winUpdate.innerText = "Dealer wins!";
+		winUpdate.innerText = "Dealer!";
 	} else if(player.isBust == false && dealer.isBust == true) {
 		console.log("bust/false bust/true: Player wins!")
-		winUpdate.innerText = "Player wins!";
+		winUpdate.innerText = "Player!";
 	} else if(player.isBust == true && dealer.isBust == true) {
 		console.log("bust/true bust/true: No winner, collect original bet.");
 		winUpdate.innerText = "No winner.";
 	} else if(player.isStand == true && dealer.isStand == true) {
 			if(player.sum > dealer.sum) {
 				console.log("stand/true stand/true: Player wins!");
-				winUpdate.innerText = "Player wins!";
-			} else {
+				winUpdate.innerText = "Player!";
+			} else if(player.sum == dealer.sum) {
+				console.log("stand/true stand/true: It's a tie!");
+				winUpdate.innerText = "It's a tie!";
+			}  else {
 				console.log("stand/true stand/true: Dealer wins!");
-				winUpdate.innerText = "Dealer wins!";
+				winUpdate.innerText = "Dealer!";
 			}
 	}
 }
 
 function isGameOver() {
-	if(dealer.isBust == true || dealer.isStand == true || dealer.isStand == true) {
+	if(dealer.isBust == true || dealer.isStand == true || dealer.isWin == true || player.isWin) {
 		winDisplay.classList.remove("inactive");
 		winUpdate.classList.remove("inactive");
 		checkWinner();
@@ -572,5 +553,4 @@ function isGameOver() {
 varSetUp();
 genDeck();
 initialDeal();
-// displayHands();
 initialDisplay();
