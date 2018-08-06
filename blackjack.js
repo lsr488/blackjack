@@ -32,9 +32,6 @@
 	// if dealer's face-up card is a ten-card, deal looks at face-down card to see if natural
 		// else doesn't look at face-down card until it's dealer's turn again
 
-// TODO handle scoring of higher numbers
-// TODO assign suits and card values
-
 var playerHand = document.querySelector("#player-hand");
 var playerTotal = document.querySelector("#player-total");
 var playerUpdate = document.querySelector("#player-update");
@@ -129,14 +126,6 @@ dealerStandButton.addEventListener("click", function(event) {
 function varSetUp() {
 	cards = deck.cards;
 	numOfCards = deck.numOfCards;
-	// pHand = player.hand;
-	// pSum = player.sum;
-	// pIsBust = player.isBust;
-	// pIsWin = player.isWin;
-	// dHand = dealer.hand;
-	// dSum = dealer.sum;
-	// dIsBust = dealer.isBust;
-	// dIsWin = dealer.isWin;
 }
 
 function genNum() {
@@ -156,7 +145,6 @@ function genDeck() {
 	tempCards.forEach(function(i) {
 		cards.push(i);
 	})
-	// console.log("deck:", cards);
 }
 
 function initialDeal() {
@@ -174,10 +162,6 @@ function dealCard(turn) {
 function displayHands() {
 	addPointValues(player);
 	addPointValues(dealer);
-	// console.log("player:", player.hand.join(", "), `(total: ${player.sum})`);
-	// console.log("dealer:", dealer.hand.join(", "), `(total: ${dealer.sum})`);	
-	// console.log("dealer:", dealer.hand[0]);	
-
 	updatePlayerDisplays();
 	updateDealerDisplays();	
 }
@@ -228,7 +212,6 @@ function addPointValues(turn) {
 			// dealer rules for Ace Handling
 			if(accPoints + 11 >= 17 && turn == dealer) {
 				// console.log("turn: ", turn);
-				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue1);
 				turn.acePointValue = deck.ace.pointValue1;
 				accPoints += deck.ace.pointValue1;
@@ -239,7 +222,6 @@ function addPointValues(turn) {
 				accPoints += deck.ace.pointValue2;
 			// player rules for Ace Handling
 			} else if(accPoints + 11 > 21 && turn == player) {
-				// console.log("turn: ", turn);
 				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue1);
 				turn.acePointValue = deck.ace.pointValue1;
@@ -296,11 +278,9 @@ function addPointValues(turn) {
 			console.log("accPoints: ", accPoints);
 		}
 	}
-
-		// below attempting to account for Ace as first element always being 11 points
-		// this doesn't work if you have a series of low cards, then an Ace, then a tenCard...
+		// I think I resolved the issue of late-stage Aces having the wrong point value
 		if(accPoints >= 21 && turn.hasAce == true && turn.acePointValue == 11) {
-			console.log("change ace point value from 11 to 1");
+			// console.log("change ace point value from 11 to 1");
 			accPoints -= 10;
 		}
 
@@ -324,26 +304,17 @@ function hit(turn) {
 	if((turn == player) && player.isStand == false) {
 		dealCard(player);
 		addPointValues(player);
-		// console.log("Dealt 1 card to player.");
-		// console.log("player:", player.hand.join(", "), `(total: ${player.sum})`);
 		updatePlayerDisplays();
 		playerUpdate.innerText = "Dealt 1 card to player.";
 		checkScore(player);
 	}
 	if(turn == dealer && dealer.isStand == false) {
 		if(dealer.sum >= 17) {
-			// if total >= 17, dealer stands
-			// console.log(dealer.sum + " >= 17: dealer stands");
-			// console.log("dealer:", dealer.hand.join(", "), `(total: ${dealer.sum})`);	
 			stand(dealer);
 			checkScore(dealer);
 		} else if(dealer.sum <= 16) {
-			// if total <= 16, dealer hits until 17 >= 17
-			// console.log(dealer.sum + " <= 16: dealer hits until 17 or greater");
 			dealCard(dealer);
 			addPointValues(dealer);
-			// console.log("Dealt 1 card to dealer.");
-			// console.log("dealer:", dealer.hand.join(", "), `(total: ${dealer.sum})`);	
 			updateDealerDisplays();
 			dealerUpdate.innerText = "Dealt 1 card to dealer.";
 			checkScore(dealer);
@@ -366,7 +337,6 @@ function stand(turn){
 }
 
 function revealCard() {
-	// dealerHand.innerText = dealer.hand.join(", ");
 	displaySuitsAndName(dealer.hand, dealerHand);	
 	disableButton(dealerRevealButton);
 	dealerFaceDown.classList.add("inactive");
@@ -403,7 +373,6 @@ function declareBust(turn) {
 		disableButton(dealerRevealButton);
 		revealCard();
 		updateDealerDisplays();
-		// checkWinner();
 	} else {
 		dealerUpdate.innerText = "Bust!"
 		disableButton(dealerHitButton);	
@@ -424,15 +393,12 @@ function checkScore(turn) {
 }
 
 function updatePlayerDisplays() {
-	// playerHand.innerText = player.hand.join(", ");
 	displaySuitsAndName(player.hand, playerHand);
 	addPointValues(player);
 	playerTotal.innerText = player.sum;	
 }
 
 function updateDealerDisplays() {
-	// dealerHand.innerText = dealer.hand.join(", ");
-	// dealerHand.innerText = dealer.hand[0];
 	displaySuitsAndName(dealer.hand, dealerHand);
 	addPointValues(dealer);
 	dealerTotal.innerText = dealer.sum;
@@ -441,7 +407,6 @@ function updateDealerDisplays() {
 function displaySuitsAndName(turn, display) {
 	var suit = "";
 	var string = "";	
-	// var heart = "&#x2661; ";
 	var heart = "&#x2665;";
 	var spade = "&#x2660;";
 	var diamond = "&#x25c6;";
@@ -451,48 +416,36 @@ function displaySuitsAndName(turn, display) {
 		var cardClass = "";
 		var cardName = "";
 		if(Object.values(deck.suits.hearts).includes(card)) {
-			// console.log("suit is hearts");
 			suit = heart;
 			cardClass = `<span class="card card-red">`;
 		} else if(Object.values(deck.suits.spades).includes(card)) {
-			// console.log("suit is spades");
 			suit = spade;
 			cardClass = `<span class="card">`;
 		} else if(Object.values(deck.suits.diamonds).includes(card)) {
-			// console.log("suit is diamonds");
 			suit = diamond;
 			cardClass = `<span class="card card-red">`;
 		} else if(Object.values(deck.suits.clubs).includes(card)) {
-			// console.log("suit is clubs");
 			suit = club;
 			cardClass = `<span class="card">`;
 		}
 
 		if(Object.values(deck.tenCards.ten).includes(card)) {
-			// console.log("card is 10");
 			cardName = "10";
 		} else if(Object.values(deck.tenCards.jack).includes(card)) {
-			// console.log("card is jack");
 			cardName = "J";
 		} else if(Object.values(deck.tenCards.queen).includes(card)) {
-			// console.log("card is queen");
 			cardName = "Q";
 		} else if(Object.values(deck.tenCards.king).includes(card)) {
-			// console.log("card is king");
 			cardName = "K";
 		} else if(Object.values(deck.ace.cardNum).includes(card)) {
-			// console.log("card is ace");
 			cardName = "A";
 		}
 
 		if(card >= 15 && card <= 22) {
-			// console.log(card - 13);
 			cardName = card - 13;
 		} else if(card >= 28 && card <= 35) {
-			// console.log(card - 26);
 			cardName = card - 26;
 		} else if(card >= 41 && card <= 48) {
-			// console.log(card - 39);
 			cardName = card - 39;
 		}
 
