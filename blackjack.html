@@ -2,38 +2,7 @@
 <html>
 <head>
 	<title>Blackjack</title>
-	
-	<style type="text/css">
-		div {
-			font-size: 24px;
-		}
-
-		.card {
-			display: inline-block;
-			margin: 0 2px 0 2px;
-			height: 70px;
-			width: 60px;
-			line-height: 70px;
-			text-align: center;
-			/*background-color: green;*/
-			/*color: red;*/
-			border: 1px solid black;
-		}
-
-		.card-red {
-			color: red;
-			display: inline-block;
-		}
-
-		.displays {
-			line-height: 40px;
-		}
-
-		.inactive {
-			display: none;
-		}		
-	</style>
-
+	<link rel="stylesheet" type="text/css" href="blackjack.css">
 </head>
 <body>
 	<h1>BlackJack Game</h1>
@@ -44,25 +13,33 @@
  -->
 
 
-	<h2>Player</h2>
-		<div>Hand: <span id="player-hand"></span></div>
-		<div class="displays">Total: <span id="player-total"></span></div>
-		<div class="displays">Update: <span id="player-update"></span></div>
-		<button name="player-hit">Hit</button>
-		<button name="player-stand">Stand</button>
+	<div class="wrapper">
+		<div id="player">
+			<h2>Player</h2>
+				<div>Hand: <span id="player-hand"></span></div>
+				<div class="displays">Total: <span id="player-total"></span></div>
+				<div class="displays">Update: <span id="player-update"></span></div>
+				<button name="player-hit">Hit</button>
+				<button name="player-stand">Stand</button>
+		</div>
 
-	<h2>Dealer</h2>
-		<div>Hand: <span id="dealer-hand"></span><span id="face-down" class="card">?</span>
+		<div id="win">
+			<h2 id="winner" class="inactive">The winner is...</h2>
+				<div id="winner-update" class="inactive"></div>
+		</div>
+
+		<div id="dealer">
+			<h2>Dealer</h2>
+				<div>Hand: <span id="dealer-hand"></span><span id="face-down" class="card">?</span>
+			</div>
+				<div class="displays">Total: <span id="dealer-total"></span></div>
+				<div class="displays">Update: <span id="dealer-update"></span></div>
+				<button name="dealer-reveal">Reveal</button>
+				<button name="dealer-hit">Hit</button>
+				<button name="dealer-stand">Stand</button>
+		</div>
+
 	</div>
-		<div class="displays">Total: <span id="dealer-total"></span></div>
-		<div class="displays">Update: <span id="dealer-update"></span></div>
-		<button name="dealer-reveal">Reveal</button>
-		<button name="dealer-hit">Hit</button>
-		<button name="dealer-stand">Stand</button>
-
-	<h2 id="winner" class="inactive">Winner</h2>
-		<div id="winner-update" class="inactive"></div>
-
 
 	<script type="text/javascript" src="blackjack.js"></script>
 </body>
