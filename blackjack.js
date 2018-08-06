@@ -45,6 +45,7 @@ var testDisplay = document.querySelector("#test-hand");
 var testTotal = document.querySelector("#test-total");
 
 var dealerHand = document.querySelector("#dealer-hand");
+var dealerFaceDown = document.querySelector("#face-down");
 var dealerTotal = document.querySelector("#dealer-total");
 var dealerUpdate = document.querySelector("#dealer-update");
 var dealerRevealButton = document.getElementsByName("dealer-reveal")[0];
@@ -232,12 +233,12 @@ function addPointValues(turn) {
 				console.log("points: ", deck.ace.pointValue2);
 				accPoints += deck.ace.pointValue2;
 			// player rules for Ace Handling
-			} else if(accPoints + 11 > 21 && (turn == player || turn == testHand)) {
+			} else if(accPoints + 11 > 21 && turn == player) {
 				// console.log("turn: ", turn);
 				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue1);
 				accPoints += deck.ace.pointValue1;
-			} else if(accPoints + 11 <= 21 && (turn == player || turn == testHand)) {
+			} else if(accPoints + 11 <= 21 && turn == player) {
 				console.log("card: ", hand[i]);
 				console.log("points: ", deck.ace.pointValue2);
 				accPoints += deck.ace.pointValue2;
@@ -350,6 +351,8 @@ function revealCard() {
 	// dealerHand.innerText = dealer.hand.join(", ");
 	displaySuitsAndName(dealer.hand, dealerHand);	
 	disableButton(dealerRevealButton);
+	dealerFaceDown.classList.add("inactive");
+	dealerUpdate.innerText = "Dealer reveals second card."
 }
 
 function checkScore(turn) {
@@ -360,10 +363,16 @@ function checkScore(turn) {
 			playerUpdate.innerText = "Blackjack!"
 			disableButton(playerHitButton);	
 			disableButton(playerStandButton);	
+			disableButton(dealerRevealButton);
+			revealCard();
+			updateDealerDisplays();
 		} else {
 			dealerUpdate.innerText = "Blackjack!"
 			disableButton(dealerHitButton);	
 			disableButton(dealerStandButton);	
+			revealCard();
+			updateDealerDisplays();
+			disableButton(dealerRevealButton);
 		}
 	} else if(turn.sum > 21) {
 		// console.log("Bust!");
@@ -372,10 +381,14 @@ function checkScore(turn) {
 			playerUpdate.innerText = "Bust!"
 			disableButton(playerHitButton);	
 			disableButton(playerStandButton);	
+			revealCard();
+			updateDealerDisplays();
+			disableButton(dealerRevealButton);
 		} else {
 			dealerUpdate.innerText = "Bust!"
 			disableButton(dealerHitButton);	
 			disableButton(dealerStandButton);	
+			disableButton(dealerRevealButton);
 		}
 	} 
 	else if(turn == dealer && turn.sum >= 17) {

@@ -22,11 +22,16 @@
 
 		.card-red {
 			color: red;
+			display: inline-block;
 		}
 
 		.displays {
 			line-height: 40px;
 		}
+
+		.inactive {
+			display: none;
+		}		
 	</style>
 
 </head>
@@ -45,7 +50,8 @@
 		<button name="player-stand">Stand</button>
 
 	<h2>Dealer</h2>
-		<div>Hand: <span id="dealer-hand"></span></div>
+		<div>Hand: <span id="dealer-hand"></span><span  id="face-down" class="card">?</span>
+	</div>
 		<div class="displays">Total: <span id="dealer-total"></span></div>
 		<div class="displays">Update: <span id="dealer-update"></span></div>
 		<button name="dealer-reveal">Reveal</button>
