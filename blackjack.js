@@ -465,6 +465,7 @@ function displaySuitsAndName(turn, display) {
 function disableButton(button) {
 	button.setAttribute("disabled", "disabled");
 	button.classList.remove("hover");
+	button.classList.add("deactivated");
 }
 
 function checkWinner() {

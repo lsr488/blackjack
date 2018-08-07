@@ -90,3 +90,8 @@ button {
 .inactive {
 	display: none;
 }
+
+.deactivated {
+	background-color: dimgray;
+	color: black;
+}
