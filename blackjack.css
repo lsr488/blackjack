@@ -1,27 +1,78 @@
+body {
+	background-color: #482B0E;
+	color: whitesmoke;
+}
+
 h1 {
 	text-align: center;
 }
+
 div {
+	font-size: 30px;
+}
+
+button {
+	background-color: #F57F17;
+	color: whitesmoke;
+	border: none;
+	border-radius: 10px;
 	font-size: 24px;
+	margin-top: 10px;
+	padding: 10px;
+}
+
+.hover:hover {
+	filter: brightness(75%);
 }
 
 .wrapper {
 	text-align: center;
 	display: grid;
 	grid-template-columns: 2fr 1fr 2fr;
-	grid-template-rows: 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr;
+	grid-template-areas: 
+	"player win dealer"
+	"player winner dealer"
+	"player . dealer";
 	grid-column-gap: 10px;
+	background-color: #1B5E20;
+	border: 2px solid #413F3D;
+	border-radius: 25%;
+	width: 700px;
+	height: 600px;
+	margin: 0 auto;
+	padding: 15px;	
+}
+
+#player {
+	grid-area: player;
+	/*background-color: blue;*/
+}
+
+#dealer {
+	grid-area: dealer;
+	/*background-color: pink;*/
+}
+
+#winner {
+	grid-area: win;
+	/*background-color: red;*/
+}
+
+#winner-update {
+	grid-area: winner;
+	/*background-color: yellow;*/
 }
 
 .card {
 	display: inline-block;
 	margin: 2px 2px 2px 2px;
-	height: 70px;
-	width: 60px;
-	line-height: 70px;
+	height: 100px;
+	width: 80px;
+	line-height: 100px;
 	text-align: center;
-	/*background-color: green;*/
-	/*color: red;*/
+	background-color: white;
+	color: black;
 	border: 1px solid black;
 }
 
@@ -31,9 +82,11 @@ div {
 }
 
 .displays {
-	line-height: 40px;
+	/*line-height: 40px;*/
+	height: 25px;
+	margin-top: 12px;
 }
 
 .inactive {
 	display: none;
-}		
+}
