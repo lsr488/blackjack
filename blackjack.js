@@ -32,6 +32,7 @@
 	// if dealer's face-up card is a ten-card, deal looks at face-down card to see if natural
 		// else doesn't look at face-down card until it's dealer's turn again
 
+
 var playerHand = document.querySelector("#player-hand");
 var playerTotal = document.querySelector("#player-total");
 var playerUpdate = document.querySelector("#player-update");
@@ -45,7 +46,7 @@ var dealerHand = document.querySelector("#dealer-hand");
 var dealerFaceDown = document.querySelector("#face-down");
 var dealerTotal = document.querySelector("#dealer-total");
 var dealerUpdate = document.querySelector("#dealer-update");
-var dealerRevealButton = document.getElementsByName("dealer-reveal")[0];
+// var dealerRevealButton = document.getElementsByName("dealer-reveal")[0];
 var dealerHitButton = document.getElementsByName("dealer-hit")[0];
 var dealerStandButton = document.getElementsByName("dealer-stand")[0];
 
@@ -95,6 +96,8 @@ var dealer = {
 	acePointValue: 0
 }
 
+var gameOver = false;
+
 playerHitButton.addEventListener("click", function(event) {
 	console.log('player hit btn clicked');
 	hit(player);
@@ -107,11 +110,11 @@ playerStandButton.addEventListener("click", function(event) {
 	updateDealerDisplays();
 });
 
-dealerRevealButton.addEventListener("click", function(event) {
-	console.log('dealer reveal btn clicked');
-	revealCard();
-	updateDealerDisplays();	
-});
+// dealerRevealButton.addEventListener("click", function(event) {
+// 	console.log('dealer reveal btn clicked');
+// 	revealCard();
+// 	updateDealerDisplays();	
+// });
 
 dealerHitButton.addEventListener("click", function(event) {
 	console.log('dealer hit btn clicked');
@@ -235,18 +238,26 @@ function addPointValues(turn) {
 		}
 		// tens
 		else if(Object.values(deck.tenCards.ten).includes(hand[i])) {
+			console.log("card: ", hand[i]);
+			console.log("points: ", deck.tenCards.pointValue);
 			accPoints += deck.tenCards.pointValue;
 		}
 		// jack
 		 else if(Object.values(deck.tenCards.jack).includes(hand[i])) {
+			console.log("card: ", hand[i]);
+			console.log("points: ", deck.tenCards.pointValue);
 			accPoints += deck.tenCards.pointValue;
 		}
 		// queen
 		else if(Object.values(deck.tenCards.queen).includes(hand[i])) {
+			console.log("card: ", hand[i]);
+			console.log("points: ", deck.tenCards.pointValue);
 			accPoints += deck.tenCards.pointValue;
 		}
 		// king
 		else if(Object.values(deck.tenCards.king).includes(hand[i])) {
+			console.log("card: ", hand[i]);
+			console.log("points: ", deck.tenCards.pointValue);
 			accPoints += deck.tenCards.pointValue;
 		}
 		// heart non-tendcards
@@ -279,8 +290,7 @@ function addPointValues(turn) {
 		}
 	}
 		// I think I resolved the issue of late-stage Aces having the wrong point value
-		if(accPoints >= 21 && turn.hasAce == true && turn.acePointValue == 11) {
-			// console.log("change ace point value from 11 to 1");
+		if(accPoints > 21 && turn.hasAce == true && turn.acePointValue == 11) {
 			accPoints -= 10;
 		}
 
@@ -338,7 +348,7 @@ function stand(turn){
 
 function revealCard() {
 	displaySuitsAndName(dealer.hand, dealerHand);	
-	disableButton(dealerRevealButton);
+	// disableButton(dealerRevealButton);
 	dealerFaceDown.classList.add("inactive");
 	dealerUpdate.innerText = "Dealer reveals second card."
 }
@@ -347,21 +357,16 @@ function declareBlackjack(turn) {
 	turn.isWin = true;
 	if(turn == player) {
 		playerUpdate.innerText = "Blackjack!"
-		disableButton(playerHitButton);	
-		disableButton(playerStandButton);	
-		disableButton(dealerRevealButton);
-		revealCard();
-		updateDealerDisplays();
-		isGameOver();	
 	} else {
 		dealerUpdate.innerText = "Blackjack!"
-		disableButton(dealerHitButton);	
-		disableButton(dealerStandButton);	
-		disableButton(dealerRevealButton);
-		revealCard();
-		updateDealerDisplays();
-		isGameOver();
 	}
+	disableButton(playerHitButton);	
+	disableButton(playerStandButton);	
+	disableButton(dealerHitButton);	
+	disableButton(dealerStandButton);	
+	revealCard();
+	updateDealerDisplays();
+	isGameOver();	
 }
 
 function declareBust(turn) {
@@ -370,14 +375,12 @@ function declareBust(turn) {
 		playerUpdate.innerText = "Bust!"
 		disableButton(playerHitButton);	
 		disableButton(playerStandButton);	
-		disableButton(dealerRevealButton);
 		revealCard();
 		updateDealerDisplays();
 	} else {
 		dealerUpdate.innerText = "Bust!"
 		disableButton(dealerHitButton);	
 		disableButton(dealerStandButton);	
-		disableButton(dealerRevealButton);
 		isGameOver();
 	}
 }
@@ -461,6 +464,7 @@ function displaySuitsAndName(turn, display) {
 
 function disableButton(button) {
 	button.setAttribute("disabled", "disabled");
+	button.classList.remove("hover");
 }
 
 function checkWinner() {
@@ -491,6 +495,11 @@ function checkWinner() {
 				winUpdate.innerText = "Dealer!";
 			}
 	}
+	disableButton(playerHitButton);
+	disableButton(playerStandButton);
+	// disableButton(dealerRevealButton);
+	disableButton(dealerHitButton);
+	disableButton(dealerStandButton);
 }
 
 function isGameOver() {
