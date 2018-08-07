@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="blackjack.css">
 </head>
 <body>
-	<h1>BlackJack Game</h1>
+	<h1>Blackjack</h1>
 
 <!-- 	<h2>Test</h2>
 		<div class="displays">Test: <span id="test-hand"></span></div>
@@ -16,11 +16,22 @@
 	<div class="wrapper">
 		<div id="player">
 			<h2>Player</h2>
-				<div>Hand: <span id="player-hand"></span></div>
-				<div class="displays">Total: <span id="player-total"></span></div>
-				<div class="displays">Update: <span id="player-update"></span></div>
-				<button name="player-hit">Hit</button>
-				<button name="player-stand">Stand</button>
+				<div><span id="player-hand"></span></div>
+				<button class="hover" name="player-hit">Hit</button>
+				<button class="hover" name="player-stand">Stand</button>
+				<div class="displays">Score: <span id="player-total"></span></div>
+				<div class="displays"><span id="player-update"></span></div>
+		</div>
+
+		<div id="dealer">
+			<h2>Dealer</h2>
+				<div><span id="dealer-hand"></span><span id="face-down" class="card">?</span>
+			</div>
+				<!-- <button name="dealer-reveal">Reveal</button> -->
+				<button class="hover" name="dealer-hit">Hit</button>
+				<button class="hover" name="dealer-stand">Stand</button>
+				<div class="displays">Score: <span id="dealer-total"></span></div>
+				<div class="displays"><span id="dealer-update"></span></div>
 		</div>
 
 		<div id="win">
@@ -28,16 +39,6 @@
 				<div id="winner-update" class="inactive"></div>
 		</div>
 
-		<div id="dealer">
-			<h2>Dealer</h2>
-				<div>Hand: <span id="dealer-hand"></span><span id="face-down" class="card">?</span>
-			</div>
-				<div class="displays">Total: <span id="dealer-total"></span></div>
-				<div class="displays">Update: <span id="dealer-update"></span></div>
-				<button name="dealer-reveal">Reveal</button>
-				<button name="dealer-hit">Hit</button>
-				<button name="dealer-stand">Stand</button>
-		</div>
 
 	</div>
 
